@@ -1,0 +1,107 @@
+Prepare a virtual environment for python codes and installations . 4
+### Use ec2 instance ssh command after launching .Change the IP everywhere once launched 
+
+ssh -i "kafka-stockmarket.pem" ec2-user@ec2-43-204-233-119.ap-south-1.compute.amazonaws.com
+
+
+If SSH is not connecting from local then in ec2 grant the same in instance policies (select myIP)
+
+
+wget https://archive.apache.org/dist/kafka/3.4.0/kafka_2.13-3.4.0.tgz
+tar -xzf kafka_2.13-3.4.0.tgz
+sudo mv kafka_2.13-3.4.0 /opt/kafka
+
+
+
+
+-----------------------
+java -version
+#if need to connect without zookeeper go for java20 or any further. 
+#sudo yum install java-1.8.0-openjdk  
+
+## Install  java 17 with kafka 3.4 as further version do not support zookeeper launch,Only can be used by Kraft launch.
+ 
+sudo wget https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.rpm
+sudo yum localinstall amazon-corretto-17-x64-linux-jdk.rpm
+java -version
+
+cd kafka_2.13-4=3.4.0
+
+
+
+
+Open 4 terminals and login aws ec2 in all from local 
+
+Start Zoo-keeper:
+-------------------------------
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+
+Open another window to start kafka
+But first ssh to to your ec2 machine as done above
+
+
+Start Kafka-server:
+----------------------------------------
+Duplicate the session & enter in a new console --
+export KAFKA_HEAP_OPTS="-Xmx256M -Xms128M"
+cd kafka_2.13-3.4.0
+
+
+It is pointing to private server , change server.properties so that it can run in public IP 
+
+To do this , you can follow any of the 2 approaches shared belwo --
+Do a "sudo nano config/server.properties" - change ADVERTISED_LISTENERS to public ip of the EC2 instance
+uncomment the line where ADVERTISED_LISTENERS is mentioned. cntrl+x cntrl+v 
+
+
+Create the topic:
+-----------------------------
+Duplicate the session & enter in a new console --
+cd kafka_2.13-3.4.0
+bin/kafka-topics.sh --create --topic demo_test --bootstrap-server 43.204.233.119:9092 --replication-factor 1 --partitions 1
+
+
+Start Producer:
+--------------------------
+bin/kafka-console-producer.sh --topic demo_test --bootstrap-server 43.204.233.119:9092
+
+Start Consumer:
+-------------------------
+Duplicate the session & enter in a new console --
+cd kafka_2.12-3.4.0
+bin/kafka-console-consumer.sh --topic demo_test --bootstrap-server 43.204.233.119:9092
+
+
+====================================================================================================================================
+
+
+
+
+
+
+Open Jupyter Notebook . ( Keep the public ip of ec2 )
+1 session for Producer code
+1 session for consumer
+
+============================================================================================================
+
+
+
+Create S3 bucket. Make sure all the services are from same region 
+
+Then create crawler over the same bucket 
+Give it an IAM GLue user to access the catalog 
+
+
+GO the athena .Configure output bucket for the same (Random s3 bucket)
+
+Then query on top of S3 using Athena . 
+
+
+
+
+
+
+
+
