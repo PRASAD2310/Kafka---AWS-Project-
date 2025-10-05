@@ -21,4 +21,4 @@ EC2
 Apache Kafka 
 
 ========================================================================
-Here is the dataset used in the video - https://github.com/darshilparmar/stock-market-kafka-data-engineering-project/blob/main/indexProcessed.csv
+Here is the dataset refrence - https://github.com/darshilparmar/stock-market-kafka-data-engineering-project/blob/main/indexProcessed.csv
